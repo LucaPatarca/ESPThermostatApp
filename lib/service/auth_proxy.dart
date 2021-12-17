@@ -8,18 +8,18 @@ class AuthProxy extends HttpInterface {
   final HttpInterface _innerService;
   final AuthService _authService = AuthService();
 
-  String token = "";
-
   AuthProxy(HttpInterface inner) : _innerService = inner;
 
   @override
   Future<StreamedResponse> sendRequest(Request request) async {
-    request.headers.addAll({'Authorization': 'Bearer ' + token});
+    request.headers
+        .addAll({'Authorization': 'Bearer ' + await _authService.loadToken()});
     var response = await _innerService.sendRequest(request);
     if (response.statusCode == 401) {
-      token = jsonDecode(await _authService.authenticate())['accessToken'];
+      await _authService.refreshToken();
       var newRequest = Request(request.method, request.url);
-      newRequest.headers['Authorization'] = 'Bearer ' + token;
+      newRequest.headers['Authorization'] =
+          'Bearer ' + await _authService.loadToken();
       return _innerService.sendRequest(newRequest);
     } else {
       return response;
