@@ -1,6 +1,8 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:termostato/model/schedule.dart';
 import 'package:termostato/provider/thermostat_provider.dart';
 import 'package:termostato/view/home.dart';
+import 'package:termostato/view/login.dart';
 import 'package:termostato/view/shedule.dart';
 import 'package:termostato/widget/schedule_dialog.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,15 @@ class _TabViewState extends State<TabView> with TickerProviderStateMixin {
         }
       });
     });
+    const FlutterSecureStorage().containsKey(key: "TOKEN").then((value) => {
+          if (!value)
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false)
+            }
+        });
     super.initState();
   }
 
@@ -84,16 +95,18 @@ class _TabViewState extends State<TabView> with TickerProviderStateMixin {
         ),
         floatingActionButton: _showFab
             ? FloatingActionButton(
-                onPressed: () async {
-                  var result = await showDialog<Change?>(
-                      context: context,
-                      builder: (context) => ScheduleDialog(
-                            days: _scheduleController.selected,
-                          ));
-                  if (result != null) {
-                    context.read<ThermostatProvider>().addChange(result);
-                  }
-                },
+                onPressed: context.read<ThermostatProvider>().online
+                    ? () async {
+                        var result = await showDialog<Change?>(
+                            context: context,
+                            builder: (context) => ScheduleDialog(
+                                  days: _scheduleController.selected,
+                                ));
+                        if (result != null) {
+                          context.read<ThermostatProvider>().addChange(result);
+                        }
+                      }
+                    : null,
                 child: const Icon(Icons.add),
               )
             : null,

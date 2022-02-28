@@ -54,7 +54,11 @@ class ApiService {
     StreamedResponse response = await _httpService.sendRequest(request);
     Map<String, dynamic> json =
         jsonDecode(await response.stream.bytesToString());
-    return ThermostatStatus.fromJson(json["device"]);
+    try {
+      return ThermostatStatus.fromJson(json["device"]);
+    } catch (e) {
+      return const ThermostatStatus();
+    }
   }
 
   Future<bool> sendTargetTemperature(double temp) async {

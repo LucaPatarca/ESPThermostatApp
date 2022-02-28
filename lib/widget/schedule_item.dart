@@ -12,12 +12,13 @@ class ScheduleItem extends StatelessWidget {
     return ListTile(
       title: Text(change.temp.toString() + " C"),
       subtitle: Text(
-        change.fromHour.toString() + " -> " + change.toHour.toString(),
+        (change.fromHour~/2).toString() + ":" + (change.fromHour%2>0?"30":"00") + " - "  
+        + (change.toHour~/2).toString() + ":" + (change.toHour%2>0?"30":"00"),
       ),
       trailing: TextButton(
-        onPressed: () {
+        onPressed: context.read<ThermostatProvider>().online?() {
           context.read<ThermostatProvider>().removeChange(change);
-        },
+        }:null,
         child: const Icon(Icons.delete),
       ),
     );

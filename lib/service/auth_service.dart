@@ -1,36 +1,31 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 
 class AuthService {
+  static final AuthService _service = AuthService._internal();
   final _storage = const FlutterSecureStorage();
   static const tokenKey = 'TOKEN';
   static const refreshTokenKey = 'REFRESH_TOKEN';
   static const userIdKey = 'REFRESH_TOKEN';
+  Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
-  Future<String> loadToken() async {
-    var token = await _storage.read(key: tokenKey);
-    if (token == null) {
-      await authenticate();
-    }
+  factory AuthService() {
+    return _service;
+  }
+
+  AuthService._internal();
+
+  Future<String?> loadToken() async {
     return await _storage.read(key: tokenKey) ?? "";
   }
 
-  Future<String> loadRefreshToken() async {
-    var refreshToken = await _storage.read(key: refreshTokenKey);
-    if (refreshToken == null) {
-      await authenticate();
-    }
+  Future<String?> loadRefreshToken() async {
     return await _storage.read(key: refreshTokenKey) ?? "";
   }
 
-  Future<String> loadUserId() async {
-    var id = await _storage.read(key: userIdKey);
-    if (id == null) {
-      await authenticate();
-    }
+  Future<String?> loadUserId() async {
     return await _storage.read(key: userIdKey) ?? "";
   }
 
@@ -41,15 +36,16 @@ class AuthService {
     await _storage.write(key: userIdKey, value: userId);
   }
 
-  Future<void> authenticate() async {
+  Future<bool> authenticate(String user, String password) async {
     print("authenticate");
+    var auth = stringToBase64.encode("$user:$password");
     var headers = {
+      'Authorization': "Basic $auth",
       'Content-Type': 'application/x-www-form-urlencoded',
-      'x-sinric-api-key': dotenv.env["SINRICPRO_API_KEY"] ?? ""
     };
     var request =
         Request('POST', Uri.parse('https://api.sinric.pro/api/v1/auth'));
-    request.bodyFields = {'client_id': dotenv.env["CLIENT_ID"] ?? ""};
+    request.bodyFields = {'client_id': "android-app"};
     request.headers.addAll(headers);
 
     StreamedResponse response = await request.send();
@@ -59,10 +55,12 @@ class AuthService {
     if (json['success'] == true) {
       await _saveToken(
           json['accessToken'], json['refreshToken'], json['account']['id']);
+      return true;
     }
+    return false;
   }
 
-  Future<void> refreshToken() async {
+  Future<bool> refreshToken() async {
     print("refresh token");
     var headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -70,8 +68,8 @@ class AuthService {
     var request = Request(
         'GET', Uri.parse('https://api.sinric.pro/api/v1/auth/refresh_token'));
     request.bodyFields = {
-      'refreshToken': await loadRefreshToken(),
-      'accountId': await loadUserId(),
+      'refreshToken': await loadRefreshToken() ?? "",
+      'accountId': await loadUserId() ?? "",
     };
     request.headers.addAll(headers);
 
@@ -82,8 +80,9 @@ class AuthService {
     if (json['success'] == true) {
       await _saveToken(
           json['accessToken'], json['refreshToken'], json['account']['id']);
+      return true;
     } else {
-      await authenticate();
+      return false;
     }
   }
 }

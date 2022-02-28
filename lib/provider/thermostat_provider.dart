@@ -13,7 +13,7 @@ class ThermostatProvider with ChangeNotifier {
   late Timer _time;
 
   ThermostatProvider() {
-    _time = Timer.periodic(const Duration(seconds: 5), (timer) {
+    _time = Timer.periodic(const Duration(seconds: 3), (timer) {
       loadStatus();
     });
   }

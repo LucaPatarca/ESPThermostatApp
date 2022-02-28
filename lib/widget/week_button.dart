@@ -15,7 +15,7 @@ class WeekButton extends StatelessWidget {
       onPressed: () {
         controller.select(day.index);
       },
-      onLongPress: () async {
+      onLongPress: context.read<ThermostatProvider>().online?() async {
         if (controller.selected.contains(day.index) &&
             controller.selected.length > 1) {
           controller.remove(day.index);
@@ -52,7 +52,7 @@ class WeekButton extends StatelessWidget {
             controller.add(day.index);
           }
         }
-      },
+      }: null,
       child: Text(day.name),
       style: ButtonStyle(
         shape: MaterialStateProperty.all(
