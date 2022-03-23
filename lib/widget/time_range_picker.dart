@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TimeRangePicker extends StatefulWidget {
-  final TimeRangeController? controller;
-  const TimeRangePicker({Key? key, this.controller}) : super(key: key);
+  final TimeRangeController? timeRangeController;
+  final TextEditingController? tempController;
+  const TimeRangePicker(
+      {Key? key, this.timeRangeController, this.tempController})
+      : super(key: key);
 
   @override
   _TimeRangePickerState createState() => _TimeRangePickerState();
 }
 
 class _TimeRangePickerState extends State<TimeRangePicker> {
-  TimeRangeController _controller = TimeRangeController();
+  TimeRangeController _timeRangeController = TimeRangeController();
+  TextEditingController _tempController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? _controller;
+    _timeRangeController = widget.timeRangeController ?? _timeRangeController;
+    _tempController = widget.tempController ?? _tempController;
   }
 
   @override
@@ -30,12 +36,12 @@ class _TimeRangePickerState extends State<TimeRangePicker> {
               onChanged: (int? value) {
                 setState(() {
                   if (value != null) {
-                    _controller.from = value;
+                    _timeRangeController.from = value;
                   }
                 });
               },
               hint: const Text("Da"),
-              value: _controller.from,
+              value: _timeRangeController.from,
               items: Iterable<int>.generate(48)
                   .map((e) => DropdownMenuItem(
                         child: Text((e / 2).floor().toString() +
@@ -55,14 +61,14 @@ class _TimeRangePickerState extends State<TimeRangePicker> {
               onChanged: (int? value) {
                 setState(() {
                   if (value != null) {
-                    _controller.to = value;
+                    _timeRangeController.to = value;
                   }
                 });
               },
               hint: const Text("A"),
-              value: _controller.to,
+              value: _timeRangeController.to,
               items: Iterable<int>.generate(49)
-                  .where((e) => e > _controller.from)
+                  .where((e) => e > _timeRangeController.from)
                   .map((e) => DropdownMenuItem(
                         child: Text((e / 2).floor().toString() +
                             ":" +
@@ -72,6 +78,13 @@ class _TimeRangePickerState extends State<TimeRangePicker> {
                   .toList(),
             ),
           ],
+        ),
+        TextField(
+          controller: _tempController,
+          maxLength: 4,
+          decoration: const InputDecoration(
+              labelText: "Temperatura...", counterText: ""),
+          keyboardType: TextInputType.number,
         ),
       ],
     );

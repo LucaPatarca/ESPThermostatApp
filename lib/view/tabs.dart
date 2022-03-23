@@ -4,6 +4,7 @@ import 'package:termostato/provider/thermostat_provider.dart';
 import 'package:termostato/view/home.dart';
 import 'package:termostato/view/login.dart';
 import 'package:termostato/view/shedule.dart';
+import 'package:termostato/view/user.dart';
 import 'package:termostato/widget/schedule_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _TabViewState extends State<TabView> with TickerProviderStateMixin {
             {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                   (route) => false)
             }
         });
@@ -60,14 +61,13 @@ class _TabViewState extends State<TabView> with TickerProviderStateMixin {
         appBar: AppBar(
           title: Text(widget.title),
           actions: [
-            TextButton(
-                onPressed: () {
-                  context.read<ThermostatProvider>().loadStatus();
-                },
-                child: const Icon(
-                  Icons.refresh,
-                  color: Colors.black,
-                ))
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const UserPage()));
+              },
+              icon: const Icon(Icons.settings),
+            )
           ],
         ),
         bottomNavigationBar: TabBar(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:termostato/model/activity.dart';
 import 'package:termostato/model/schedule.dart';
 import 'package:termostato/model/thermostat_modes.dart';
 import 'package:termostato/model/thermostat_status.dart';
@@ -10,6 +11,7 @@ class ThermostatProvider with ChangeNotifier {
   final ApiService _service = ApiService();
 
   ThermostatStatus _status = const ThermostatStatus();
+  List<Activity> _activities = [];
   late Timer _time;
 
   ThermostatProvider() {
@@ -20,7 +22,9 @@ class ThermostatProvider with ChangeNotifier {
 
   Future<void> loadStatus() async {
     var result = await _service.getCurrentStatus();
+    var activities = await _service.getActivities();
     _status = result;
+    _activities = activities;
     notifyListeners();
   }
 
@@ -30,6 +34,7 @@ class ThermostatProvider with ChangeNotifier {
   double get currentHumidity => _status.currentHumidity;
   bool get online => _status.online;
   Schedule get schedule => _status.schedule;
+  List<Activity> get activities => _activities;
 
   set targetTemp(double value) {
     _service.sendTargetTemperature(value);

@@ -11,14 +11,16 @@ class ScheduleDialog extends StatefulWidget {
 }
 
 class _ScheduleDialogState extends State<ScheduleDialog> {
-  final TimeRangeController _controller = TimeRangeController();
+  final TimeRangeController _timeRangeController = TimeRangeController();
+  final TextEditingController _tempController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Aggiungi Programma"),
       content: TimeRangePicker(
-        controller: _controller,
+        timeRangeController: _timeRangeController,
+        tempController: _tempController,
       ),
       actions: [
         TextButton(
@@ -31,8 +33,11 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
           onPressed: () {
             Navigator.pop(
                 context,
-                Change(widget.days.toList(), _controller.from, _controller.to,
-                    20));
+                Change(
+                    widget.days.toList(),
+                    _timeRangeController.from,
+                    _timeRangeController.to,
+                    double.parse(_tempController.text)));
           },
           child: const Text("Aggiungi"),
         ),

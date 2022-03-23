@@ -45,7 +45,7 @@ class AuthService {
     };
     var request =
         Request('POST', Uri.parse('https://api.sinric.pro/api/v1/auth'));
-    request.bodyFields = {'client_id': "android-app"};
+    request.bodyFields = {'client_id': "android-emulator"};
     request.headers.addAll(headers);
 
     StreamedResponse response = await request.send();
@@ -84,5 +84,9 @@ class AuthService {
     } else {
       return false;
     }
+  }
+
+  void logout() {
+    _storage.deleteAll();
   }
 }
