@@ -22,8 +22,8 @@ class HomePage extends StatelessWidget {
               items: ThermostatMode.values
                   .map(
                     (e) => DropdownMenuItem(
-                      child: Text(e.name),
                       value: e,
+                      child: Text(e.name),
                     ),
                   )
                   .toList(),

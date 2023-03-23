@@ -10,8 +10,8 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   Future<String?> _authUser(LoginData data, BuildContext context) async {
-    var _service = AuthService();
-    var result = await _service.authenticate(data.name, data.password);
+    var service = AuthService();
+    var result = await service.authenticate(data.name, data.password);
     if (!result) {
       return "Login error";
     }
@@ -20,6 +20,7 @@ class LoginScreen extends StatelessWidget {
     if (!result) {
       return "No device found";
     }
+    return null;
   }
 
   Future<String?> _recoverPassword(String name) {

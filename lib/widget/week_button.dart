@@ -24,11 +24,7 @@ class WeekButton extends StatelessWidget {
                 bool? result = await showDialog<bool?>(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: Text("Copiare " +
-                              WeekDay.values[controller.selected.first].name +
-                              " su " +
-                              day.name +
-                              "?"),
+                          title: Text("Copiare ${WeekDay.values[controller.selected.first].name} su ${day.name}?"),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -55,7 +51,6 @@ class WeekButton extends StatelessWidget {
               }
             }
           : null,
-      child: Text(day.name),
       style: ButtonStyle(
         shape: MaterialStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(40))),
@@ -66,6 +61,7 @@ class WeekButton extends StatelessWidget {
             ? MaterialStateProperty.all(Colors.white)
             : null,
       ),
+      child: Text(day.name),
     );
   }
 }

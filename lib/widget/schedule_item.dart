@@ -10,10 +10,9 @@ class ScheduleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(change.temp.toString() + " C"),
+      title: Text("${change.temp} C"),
       subtitle: Text(
-        (change.fromHour~/2).toString() + ":" + (change.fromHour%2>0?"30":"00") + " - "  
-        + (change.toHour~/2).toString() + ":" + (change.toHour%2>0?"30":"00"),
+        "${change.fromHour~/2}:${change.fromHour%2>0?"30":"00"} - ${change.toHour~/2}:${change.toHour%2>0?"30":"00"}",
       ),
       trailing: TextButton(
         onPressed: context.read<ThermostatProvider>().online?() {

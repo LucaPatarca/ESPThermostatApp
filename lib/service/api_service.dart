@@ -27,8 +27,7 @@ class ApiService {
             "type=request&"
             "createdAt=${DateTime.now().millisecondsSinceEpoch}&"
             "action=$action&"
-            "value=" +
-        jsonEncode(value);
+            "value=${jsonEncode(value)}";
     String url =
         "https://api.sinric.pro/api/v1/devices/${prefs.getString("DEVICE_ID") ?? ""}/action?$query";
     Request request = Request('GET', Uri.parse(url));

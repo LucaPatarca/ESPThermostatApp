@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:termostato/model/activity.dart';
 import 'package:termostato/provider/settings_provider.dart';
 
@@ -41,7 +41,7 @@ class ActivityTile extends StatelessWidget {
     return ListTile(
       title: Text((activity.clientId == context.watch<SettingsProvider>().name
               ? "Tu hai "
-              : activity.displayClient + " ha ") +
+              : "${activity.displayClient} ha ") +
           activity.type.displayMessage),
       subtitle: Text(timeAgo(activity.time)),
       leading: _icons[activity.type.index],

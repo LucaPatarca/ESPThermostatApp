@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class TimeRangePicker extends StatefulWidget {
   final TimeRangeController? timeRangeController;
@@ -9,7 +8,7 @@ class TimeRangePicker extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TimeRangePickerState createState() => _TimeRangePickerState();
+  State createState() => _TimeRangePickerState();
 }
 
 class _TimeRangePickerState extends State<TimeRangePicker> {
@@ -44,10 +43,8 @@ class _TimeRangePickerState extends State<TimeRangePicker> {
               value: _timeRangeController.from,
               items: Iterable<int>.generate(48)
                   .map((e) => DropdownMenuItem(
-                        child: Text((e / 2).floor().toString() +
-                            ":" +
-                            ((e % 2 == 0) ? "00" : "30")),
                         value: e,
+                        child: Text("${(e / 2).floor()}:${(e % 2 == 0) ? "00" : "30"}"),
                       ))
                   .toList(),
             ),
@@ -70,10 +67,8 @@ class _TimeRangePickerState extends State<TimeRangePicker> {
               items: Iterable<int>.generate(49)
                   .where((e) => e > _timeRangeController.from)
                   .map((e) => DropdownMenuItem(
-                        child: Text((e / 2).floor().toString() +
-                            ":" +
-                            ((e % 2 == 0) ? "00" : "30")),
                         value: e,
+                        child: Text("${(e / 2).floor()}:${(e % 2 == 0) ? "00" : "30"}"),
                       ))
                   .toList(),
             ),

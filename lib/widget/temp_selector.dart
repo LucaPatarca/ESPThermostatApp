@@ -13,7 +13,7 @@ class TempSelector extends StatefulWidget {
 class _TempSelectorState extends State<TempSelector> {
   @override
   Widget build(BuildContext context) {
-    var _innerTextStyle = TextStyle(
+    var innerTextStyle = TextStyle(
       color: Theme.of(context).primaryColor,
       fontSize: 22,
     );
@@ -32,22 +32,20 @@ class _TempSelectorState extends State<TempSelector> {
           ),
           infoProperties: InfoProperties(
               topLabelText: context.watch<ThermostatProvider>().online
-                  ? context
+                  ? "${context
                           .watch<ThermostatProvider>()
                           .currentTemp
-                          .toStringAsFixed(1) +
-                      " C"
+                          .toStringAsFixed(1)} C"
                   : "offline",
-              topLabelStyle: _innerTextStyle,
+              topLabelStyle: innerTextStyle,
               bottomLabelText: context.watch<ThermostatProvider>().online
-                  ? context
+                  ? "${context
                           .watch<ThermostatProvider>()
                           .currentHumidity
-                          .toStringAsFixed(1) +
-                      " %"
+                          .toStringAsFixed(1)} %"
                   : null,
-              bottomLabelStyle: _innerTextStyle,
-              modifier: (double value) => value.toStringAsFixed(1) + " C")),
+              bottomLabelStyle: innerTextStyle,
+              modifier: (double value) => "${value.toStringAsFixed(1)} C")),
       min: 15,
       max: 25,
       initialValue: context.watch<ThermostatProvider>().targetTemp,
