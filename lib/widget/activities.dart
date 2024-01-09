@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
-import 'package:termostato/model/activity.dart';
+import 'package:provider/provider.dart';
 import 'package:termostato/provider/thermostat_provider.dart';
 import 'package:termostato/widget/activity_tile.dart';
 

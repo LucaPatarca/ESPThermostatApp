@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:termostato/model/activity.dart';
+import 'package:termostato/model/device.dart';
 import 'package:termostato/model/schedule.dart';
 import 'package:termostato/model/thermostat_modes.dart';
 import 'package:termostato/model/thermostat_status.dart';
@@ -12,13 +13,7 @@ class ThermostatProvider with ChangeNotifier {
 
   ThermostatStatus _status = const ThermostatStatus();
   List<Activity> _activities = [];
-  late Timer _time;
-
-  ThermostatProvider() {
-    _time = Timer.periodic(const Duration(seconds: 3), (timer) {
-      loadStatus();
-    });
-  }
+  Device _selectedDevice = Device();
 
   Future<void> loadStatus() async {
     var result = await _service.getCurrentStatus();
@@ -35,6 +30,7 @@ class ThermostatProvider with ChangeNotifier {
   bool get online => _status.online;
   Schedule get schedule => _status.schedule;
   List<Activity> get activities => _activities;
+  Device get selectedDevice => _selectedDevice;
 
   set targetTemp(double value) {
     _service.sendTargetTemperature(value);
@@ -42,6 +38,11 @@ class ThermostatProvider with ChangeNotifier {
 
   set selectedMode(ThermostatMode mode) {
     _service.sendThermostatMode(mode);
+  }
+
+  set selectedDevice(Device device) {
+    _selectedDevice = device;
+    notifyListeners();
   }
 
   addChange(Change change) async {

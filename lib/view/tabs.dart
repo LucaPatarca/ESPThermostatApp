@@ -1,10 +1,12 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
+import 'package:termostato/model/device.dart';
 import 'package:termostato/model/schedule.dart';
+import 'package:termostato/provider/settings_provider.dart';
 import 'package:termostato/provider/thermostat_provider.dart';
+import 'package:termostato/router/routing_path.dart';
 import 'package:termostato/view/home.dart';
-import 'package:termostato/view/login.dart';
 import 'package:termostato/view/shedule.dart';
-import 'package:termostato/view/user.dart';
+import 'package:termostato/view/config.dart';
 import 'package:termostato/widget/schedule_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,15 +37,8 @@ class _TabViewState extends State<TabView> with TickerProviderStateMixin {
         }
       });
     });
-    const FlutterSecureStorage().containsKey(key: "TOKEN").then((value) => {
-          if (!value)
-            {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => false)
-            }
-        });
+    context.read<ThermostatProvider>().selectedDevice =
+        context.read<SettingsProvider>().devices.first;
     super.initState();
   }
 
@@ -55,17 +50,27 @@ class _TabViewState extends State<TabView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final devices = context.watch<SettingsProvider>().devices;
+    final thermProvider = context.watch<ThermostatProvider>();
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: DropdownMenu<Device>(
+            initialSelection: devices.first,
+            dropdownMenuEntries: devices
+                .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                .toList(),
+            inputDecorationTheme:
+                const InputDecorationTheme(border: InputBorder.none),
+            onSelected: (value) => setState(() {
+              thermProvider.selectedDevice =
+                  value ?? thermProvider.selectedDevice;
+            }),
+          ),
           actions: [
             IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const UserPage()));
-              },
+              onPressed: () => context.push(RoutingPath.config),
               icon: const Icon(Icons.settings),
             )
           ],

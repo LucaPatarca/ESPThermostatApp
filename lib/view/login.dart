@@ -20,6 +20,7 @@ class LoginScreen extends StatelessWidget {
     if (!result) {
       return "No device found";
     }
+    return null;
   }
 
   Future<String?> _recoverPassword(String name) {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:termostato/provider/settings_provider.dart';
+import 'package:termostato/provider/thermostat_provider.dart';
+import 'package:termostato/router/routing_path.dart';
 import 'package:termostato/service/auth_service.dart';
 import 'package:termostato/view/login.dart';
 
@@ -18,7 +20,8 @@ class _UserPageState extends State<UserPage> {
 
   @override
   void initState() {
-    _userTextController.text = context.read<SettingsProvider>().name;
+    _userTextController.text =
+        context.read<ThermostatProvider>().selectedDevice.name;
     _focusNode.addListener(() {
       if (!_focusNode.hasPrimaryFocus) {
         _saveText();
@@ -34,6 +37,8 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = context.watch<SettingsProvider>();
+    final selectedDevice = context.watch<ThermostatProvider>().selectedDevice;
     return Scaffold(
         appBar: AppBar(
           title: const Text("Impostazioni"),
@@ -63,11 +68,37 @@ class _UserPageState extends State<UserPage> {
                     ),
                   ],
                 ),
-                Text(
-                  context.watch<SettingsProvider>().email,
+                const Text(
+                  "Connessioni",
                   style: TextStyle(
-                      fontSize: 14, color: Theme.of(context).disabledColor),
+                    fontSize: 18,
+                  ),
                   textAlign: TextAlign.center,
+                ),
+                Expanded(
+                  child: ListView(
+                    children: settings.devices
+                        .map((e) => ListTile(
+                              title: Text(e.name),
+                              trailing: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.delete)),
+                            ))
+                        .toList(),
+                  ),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    settings.devices = settings.devices..remove(selectedDevice);
+                    context.go(RoutingPath.home);
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  child: const Text(
+                    "Elimina Dispositivo",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
